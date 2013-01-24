@@ -1,6 +1,6 @@
 from __future__ import division         # confidence unknown
 
-def saaModel (model):
+def saaModel(model):
     """Get vertices for SAA model number `model`.
 
     This was copied from UVMpdbelem.cgi, downloaded from:

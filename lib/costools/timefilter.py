@@ -3,16 +3,15 @@
 
 from __future__ import division         # confidence high
 
-__author__ = "Phil Hodge, STScI, August 2012."
 __usage__ = """
 
 1. To run this task from within Python::
 
     >>> from costools import timefilter
-    >>> timefilter.TimelineFilter ("xyz_corrtag.fits", "temp_corrtag.fits",
-                                   "sun_alt > 0.")
+    >>> timefilter.TimelineFilter("xyz_corrtag.fits", "temp_corrtag.fits",
+                                  "sun_alt > 0.")
 
-.. note:: make sure the `costools` package is on your Python path
+.. note:: make sure the costools package is on your Python path
 
 2. To run this task using the TEAL GUI to set the parameters under PyRAF::
 
@@ -51,7 +50,8 @@ import saamodel
 
 __taskname__ = "timefilter"
 __version__ = "0.4"
-__vdate__ = "2011 June 29"
+__vdate__ = "2013 January 24"
+__author__ = "Phil Hodge, STScI, August 2012."
 
 DEGtoRAD = math.pi / 180.
 TWOPI = 2. * math.pi
@@ -73,15 +73,15 @@ def main():
     """Filter a corrtag file using its timeline extension."""
 
     try:
-        (options, pargs) = getopt.getopt (sys.argv[1:], "hv", ["help"])
+        (options, pargs) = getopt.getopt(sys.argv[1:], "hv", ["help"])
     except Exception, error:
-        print str (error)
+        print str(error)
         prtOptions()
         return
 
     help = False
     verbose = False
-    for i in range (len (options)):
+    for i in range(len(options)):
         if options[i][0] == "-h":
             help = True
         elif options[i][0] == "--help":
@@ -98,7 +98,7 @@ def main():
 
     # timefilter.py input                       # to just print info
     # timefilter.py input output filter
-    nargs = len (pargs)
+    nargs = len(pargs)
     if nargs < 1 or nargs > 3:
         prtOptions()
         return
@@ -115,7 +115,7 @@ def main():
     if nargs == 3:
         filter = pargs[2]
 
-    tlf = TimelineFilter (input, output, filter, verbose=verbose)
+    tlf = TimelineFilter(input, output, filter, verbose=verbose)
 
 def prtOptions():
     """Print a list of command-line options and arguments."""
@@ -133,7 +133,7 @@ def prtOptions():
     print "      e.g. 'sun_alt > -0.5 or ly_alpha > 2'"
     print "      or 'info' or 'reset' ('clear' is synonymous with 'reset')"
 
-def expandFilename (filename):
+def expandFilename(filename):
     """Expand environment variables to get the real file name.
 
     Parameters
@@ -155,7 +155,7 @@ def expandFilename (filename):
     count = 0
     MAX_COUNT = 100
     while not done:
-        temp = os.path.expandvars (fname)       # $stuff/file
+        temp = os.path.expandvars(fname)        # $stuff/file
         count += 1
         if temp == fname:
             done = True
@@ -165,13 +165,13 @@ def expandFilename (filename):
     if not done:
         raise RuntimeError, "%d iterations exceeded while expanding " \
                 "variables in file name %s" % (MAX_COUNT, filename)
-    fname = os.path.abspath (fname)             # ../file
-    fname = os.path.expanduser (fname)          # ~/file
-    real_file_name = os.path.normpath (fname)   # remove redundant strings
+    fname = os.path.abspath(fname)              # ../file
+    fname = os.path.expanduser(fname)           # ~/file
+    real_file_name = os.path.normpath(fname)    # remove redundant strings
 
     return real_file_name
 
-def findMedian (x):
+def findMedian(x):
     """Compute the median of x.
 
     Parameters
@@ -187,7 +187,7 @@ def findMedian (x):
         middle elements.
     """
 
-    nelem = len (x)
+    nelem = len(x)
     middle = nelem // 2
     if middle * 2 < nelem:
         odd = True
@@ -201,7 +201,7 @@ def findMedian (x):
 
     return median_x
 
-def toRect (longitude, latitude):
+def toRect(longitude, latitude):
     """Convert longitude and latitude to rectangular coordinates.
 
     Parameters
@@ -218,17 +218,17 @@ def toRect (longitude, latitude):
         Unit vector in rectangular coordinates.
     """
 
-    rect = np.array ([1.0, 0.0, 0.0], dtype=np.float64)
+    rect = np.array([1.0, 0.0, 0.0], dtype=np.float64)
     longitude *= DEGtoRAD
     latitude *= DEGtoRAD
 
-    rect[0] = math.cos (latitude) * math.cos (longitude)
-    rect[1] = math.cos (latitude) * math.sin (longitude)
-    rect[2] = math.sin (latitude)
+    rect[0] = math.cos(latitude) * math.cos(longitude)
+    rect[1] = math.cos(latitude) * math.sin(longitude)
+    rect[2] = math.sin(latitude)
 
     return rect
 
-def testWithinSAA (hst, vertices, middle_SAA):
+def testWithinSAA(hst, vertices, middle_SAA):
     """Test whether HST is within the polygon for an SAA contour.
 
     Parameters
@@ -244,7 +244,7 @@ def testWithinSAA (hst, vertices, middle_SAA):
     middle_SAA: array_like
         Unit vector from the center of the Earth toward a point near the
         middle of the SAA region.  This is for making a quick check that
-        `hst` is close enough to the SAA contour to be worth making a
+        hst is close enough to the SAA contour to be worth making a
         detailed check.
 
     Returns
@@ -257,13 +257,13 @@ def testWithinSAA (hst, vertices, middle_SAA):
     # opposite to the SAA contour (because this would not be caught by
     # the code below!), but it should also save unnecessary arithmetic
     # most of the time.
-    if np.dot (hst, middle_SAA) < 0.:
+    if np.dot(hst, middle_SAA) < 0.:
         return False
 
-    nvertices = len (vertices)
+    nvertices = len(vertices)
 
     sin_lat_hst = hst[2]
-    cos_lat_hst = math.sqrt (1. - sin_lat_hst**2)
+    cos_lat_hst = math.sqrt(1. - sin_lat_hst**2)
     cos_long_hst = hst[0] / cos_lat_hst
     sin_long_hst = hst[1] / cos_lat_hst
 
@@ -277,18 +277,18 @@ def testWithinSAA (hst, vertices, middle_SAA):
     v_rotrot[:,0] =  v_rot[:,0] * cos_lat_hst + v_rot[:,2] * sin_lat_hst
     v_rotrot[:,2] = -v_rot[:,0] * sin_lat_hst + v_rot[:,2] * cos_lat_hst
 
-    azimuth = np.arctan2 (v_rotrot[:,2], v_rotrot[:,1])
-    azimuth = np.where (azimuth < 0., azimuth + TWOPI, azimuth)
+    azimuth = np.arctan2(v_rotrot[:,2], v_rotrot[:,1])
+    azimuth = np.where(azimuth < 0., azimuth + TWOPI, azimuth)
 
     delta_az = azimuth[1:] - azimuth[0:-1]
-    delta_az = np.where (delta_az < -np.pi, delta_az + TWOPI, delta_az)
-    delta_az = np.where (delta_az > np.pi, delta_az - TWOPI, delta_az)
+    delta_az = np.where(delta_az < -np.pi, delta_az + TWOPI, delta_az)
+    delta_az = np.where(delta_az > np.pi, delta_az - TWOPI, delta_az)
 
     sum_delta_az = delta_az.sum()
 
     return not (sum_delta_az < 0.1 and sum_delta_az > -0.1)
 
-class TimelineFilter (object):
+class TimelineFilter(object):
     """Filter a TIME-TAG table by setting a flag in the DQ column.
 
     There are no user-callable methods.  Instantiating the class does
@@ -345,13 +345,13 @@ class TimelineFilter (object):
         HDU number for the first GTI extension.
 
     first_gti: list of two-element lists
-        The contents of the first GTI table.  Each element of `first_gti`
+        The contents of the first GTI table.  Each element of first_gti
         is a list giving the start and stop times (in seconds since
         EXPSTART) for a "good time interval," before any change to the
         GTI table resulting from filtering by this module.
     """
 
-    def __init__ (self, input, output=None, filter=None, verbose=False):
+    def __init__(self, input, output=None, filter=None, verbose=False):
         """Set DQ flag to mark bad time intervals.
 
         Parameters
@@ -377,15 +377,15 @@ class TimelineFilter (object):
 
         self.verbose = verbose
 
-        self.input = expandFilename (input)
+        self.input = expandFilename(input)
         if self.verbose:
             print "Input file", self.input
         self.output = output
         if self.output is not None:
-            self.output = expandFilename (output)
+            self.output = expandFilename(output)
 
         self.filter_str = filter        # may be replaced later (currently not)
-        self.interpretFilter (filter)
+        self.interpretFilter(filter)
 
         if self.filter == ["info"]:
             iomode = "readonly"
@@ -395,10 +395,10 @@ class TimelineFilter (object):
             iomode = "readonly"
 
         # If output was specified, check that it doesn't already exist.
-        if self.output and os.access (self.output, os.F_OK):
+        if self.output and os.access(self.output, os.F_OK):
             raise RuntimeError, "output file %s already exists" % self.output
 
-        self.fd = pyfits.open (self.input, mode=iomode)
+        self.fd = pyfits.open(self.input, mode=iomode)
         if iomode == "update" and self.verbose:
             print "Input file opened read/write"
         self.findExtensions()
@@ -407,7 +407,7 @@ class TimelineFilter (object):
         # events_time will be gotten later if we need it.
         self.events_time = None
         try:
-            self.dq = self.fd[self.events_hdunum].data.field ("dq")
+            self.dq = self.fd[self.events_hdunum].data.field("dq")
         except (KeyError, AttributeError):
             self.fd.close()
             raise RuntimeError, \
@@ -428,15 +428,15 @@ class TimelineFilter (object):
 
         self.fd.close()
 
-    def interpretFilter (self, filter):
-        """Split `filter` into its parts.
+    def interpretFilter(self, filter):
+        """Split filter into its parts.
 
         Parameters
         ----------
         filter: str
             Specification of how to filter, e.g. column name in TIMELINE
             table, cutoff value, and whether values to be flagged as bad
-            are greater than the cutoff, less than, etc.  `filter` may
+            are greater than the cutoff, less than, etc.  filter may
             alternatively be "info" or "clear" or "reset".
         """
 
@@ -446,8 +446,8 @@ class TimelineFilter (object):
 
         filter_lower = filter.lower()
         information = "information"
-        len_filter = max (4, len (filter))
-        len_filter = min (len_filter, len (information))
+        len_filter = max(4, len(filter))
+        len_filter = min(len_filter, len(information))
         if filter_lower[:len_filter] == information[:len_filter]:
             self.filter = ["info"]
             return
@@ -457,7 +457,7 @@ class TimelineFilter (object):
             return
 
         words = filter.split()
-        nwords = len (words)
+        nwords = len(words)
         if nwords == 0:
             self.filter = []
             return
@@ -477,27 +477,27 @@ class TimelineFilter (object):
             conj = ""
             if colname_l == "and":
                 conj = AND
-                self.filter.append (conj)
+                self.filter.append(conj)
                 delta_i = 1
             elif colname_l == "or":
                 conj = OR
-                self.filter.append (conj)
+                self.filter.append(conj)
                 delta_i = 1
             elif colname_l == "xor":
                 conj = XOR
-                self.filter.append (conj)
+                self.filter.append(conj)
                 delta_i = 1
             elif colname_l == "saa":
                 relation = None
                 if i+1 >= nwords:
                     raise RuntimeError, error_msg
-                cutoff = int (words[i+1])       # SAA model number
+                cutoff = int(words[i+1])        # SAA model number
                 delta_i = 2
             else:
                 if i+2 >= nwords:
                     raise RuntimeError, error_msg
                 relation = words[i+1]           # ">", "<", etc.
-                cutoff = float (words[i+2])
+                cutoff = float(words[i+2])
                 delta_i = 3
 
             if not conj:
@@ -517,11 +517,11 @@ class TimelineFilter (object):
                     relation_fcn = self.saaFilter
                 else:
                     raise RuntimeError, error_msg
-                self.filter.append ((colname, relation_fcn, cutoff))
+                self.filter.append((colname, relation_fcn, cutoff))
 
             i += delta_i
 
-    def printInfo (self):
+    def printInfo(self):
         """Print information about the input file.
 
         The information printed includes:
@@ -544,18 +544,18 @@ class TimelineFilter (object):
                 print "GTI:  no good time intervals"
             else:
                 print "GTI:  start     stop"
-                for i in range (len (gti)):
+                for i in range(len(gti)):
                     print "%11.3f %8.3f" % (gti[i][0], gti[i][1])
 
         events_hdu = self.fd[self.events_hdunum]
-        dq = events_hdu.data.field ("dq")
-        dq_2048 = np.where (np.bitwise_and (dq, calcosparam.DQ_BAD_TIME) > 0,
-                            1., 0.)
+        dq = events_hdu.data.field("dq")
+        dq_2048 = np.where(np.bitwise_and(dq, calcosparam.DQ_BAD_TIME) > 0,
+                           1., 0.)
         n_bad = dq_2048.sum()
-        n_total = float (len (dq))
+        n_total = float(len(dq))
         print "%.1f %% of DQ column flagged with %d" % \
                (100. * n_bad / n_total, calcosparam.DQ_BAD_TIME)
-        del (dq, dq_2048)
+        del(dq, dq_2048)
         print ""
 
         if self.tl_hdunum is None:
@@ -564,24 +564,24 @@ class TimelineFilter (object):
 
         tl_hdunum = self.tl_hdunum
         # TIME column in the TIMELINE extension
-        time_col = self.fd[tl_hdunum].data.field ("time")
-        nelem = len (time_col)
+        time_col = self.fd[tl_hdunum].data.field("time")
+        nelem = len(time_col)
         print "%d rows in TIMELINE" % nelem
         if nelem <= 0:
             return
 
-        sun_alt_col    = self.fd[tl_hdunum].data.field ("sun_alt")
-        target_alt_col = self.fd[tl_hdunum].data.field ("target_alt")
-        longitude_col  = self.fd[tl_hdunum].data.field ("longitude")
-        latitude_col   = self.fd[tl_hdunum].data.field ("latitude")
-        shift1_col     = self.fd[tl_hdunum].data.field ("shift1")
-        ly_alpha_col   = self.fd[tl_hdunum].data.field ("ly_alpha")
-        darkrate_col   = self.fd[tl_hdunum].data.field ("darkrate")
+        sun_alt_col    = self.fd[tl_hdunum].data.field("sun_alt")
+        target_alt_col = self.fd[tl_hdunum].data.field("target_alt")
+        longitude_col  = self.fd[tl_hdunum].data.field("longitude")
+        latitude_col   = self.fd[tl_hdunum].data.field("latitude")
+        shift1_col     = self.fd[tl_hdunum].data.field("shift1")
+        ly_alpha_col   = self.fd[tl_hdunum].data.field("ly_alpha")
+        darkrate_col   = self.fd[tl_hdunum].data.field("darkrate")
 
         middle = nelem // 2
-        median_shift1 = findMedian (shift1_col)
-        median_ly_alpha = findMedian (ly_alpha_col)
-        median_darkrate = findMedian (darkrate_col)
+        median_shift1 = findMedian(shift1_col)
+        median_ly_alpha = findMedian(ly_alpha_col)
+        median_darkrate = findMedian(darkrate_col)
 
         print "column   beginning    middle       end"
         print "time      %8.2f  %8.2f  %8.2f" % \
@@ -606,7 +606,7 @@ class TimelineFilter (object):
         print "darkrate %11.5g  %11.5g  %11.5g" % \
                 (darkrate_col.min(), darkrate_col.max(), median_darkrate)
 
-    def clearDqFlag (self):
+    def clearDqFlag(self):
         """Clear (reset) the bad-time-interval flag in the DQ column.
 
         The bit corresponding to the bad-time-interval flag value 2048
@@ -625,15 +625,15 @@ class TimelineFilter (object):
             raise RuntimeError, "No EVENTS extension in file %s" % self.input
 
         events_hdu = self.fd[self.events_hdunum]
-        dq = events_hdu.data.field ("dq")
+        dq = events_hdu.data.field("dq")
         not_badt = -1 ^ calcosparam.DQ_BAD_TIME
-        dq[:] = np.bitwise_and (dq, not_badt)
+        dq[:] = np.bitwise_and(dq, not_badt)
         history = "Flag %d cleared in DQ column." % calcosparam.DQ_BAD_TIME
-        self.fd[0].header.add_history (history)
+        self.fd[0].header.add_history(history)
         if self.verbose:
             print "Flag %d cleared" % calcosparam.DQ_BAD_TIME
 
-        ngti = len (self.gti_list)
+        ngti = len(self.gti_list)
         if ngti > 1:
             last_gti_info = self.gti_list[-1]
             prev_gti_info = self.gti_list[-2]
@@ -642,7 +642,7 @@ class TimelineFilter (object):
             prev_gti_hdunum = prev_gti_info[1]
             # overwrite last GTI extension with previous one
             self.fd[last_gti_hdunum] = self.fd[prev_gti_hdunum].copy()
-            self.fd[last_gti_hdunum].header.update ("extver", last_gti_extver)
+            self.fd[last_gti_hdunum].header.update("extver", last_gti_extver)
             if self.verbose:
                 print "GTI extension %d overwritten by GTI extension %d" % \
                         (last_gti_hdunum, prev_gti_hdunum)
@@ -651,7 +651,7 @@ class TimelineFilter (object):
         # DQ_BURST might still be set.
         new_gti = self.recomputeExptime()
 
-    def setDqFlag (self):
+    def setDqFlag(self):
         """Set the bad-time-interval flag in the DQ column.
 
         The bit corresponding to the bad-time-interval flag value (2048)
@@ -681,13 +681,13 @@ class TimelineFilter (object):
 
         # these are columns in the EVENTS extension
         if self.events_time is None:
-            self.events_time = cosutil.getColCopy (data=events_hdu.data,
-                                                   column="time")
-        nevents = len (self.events_time)
+            self.events_time = cosutil.getColCopy(data=events_hdu.data,
+                                                  column="time")
+        nevents = len(self.events_time)
 
         # This is the column in the TIMELINE extension.
-        time_col = cosutil.getColCopy (data=self.fd[self.tl_hdunum].data,
-                                       column="time")
+        time_col = cosutil.getColCopy(data=self.fd[self.tl_hdunum].data,
+                                      column="time")
 
         # the first loop is for a single condition or for combining conditions
         # with "and"
@@ -696,7 +696,7 @@ class TimelineFilter (object):
         conj = None
         saved = False
         for item in self.filter:
-            if isinstance (item, tuple):
+            if isinstance(item, tuple):
                 # this corresponds to a condition, such as "sun_alt < 0"
                 (colname, relation_fcn, cutoff) = item
 
@@ -706,22 +706,22 @@ class TimelineFilter (object):
                         filter_col = ""     # just to have a definite value
                     else:
                         filter_col = \
-                        self.fd[self.tl_hdunum].data.field (colname)
-                    nelem = len (time_col)
+                        self.fd[self.tl_hdunum].data.field(colname)
+                    nelem = len(time_col)
                     if flag_a is None:
-                        flag_a = relation_fcn (filter_col, cutoff)
+                        flag_a = relation_fcn(filter_col, cutoff)
                     else:
                         # combine conditions with "and"
-                        flag_b = relation_fcn (filter_col, cutoff)
-                        flag_a = np.logical_and (flag_a, flag_b)
+                        flag_b = relation_fcn(filter_col, cutoff)
+                        flag_a = np.logical_and(flag_a, flag_b)
                     saved = False
             else:
                 # the current item is a conjunction:  "and", "or", "xor"
                 if item == AND:
                     conj = item
                 elif item == OR or item == XOR:
-                    flags.append (flag_a.copy())
-                    flags.append (item)
+                    flags.append(flag_a.copy())
+                    flags.append(item)
                     flag_a = None
                     saved = True
                     conj = None
@@ -730,32 +730,32 @@ class TimelineFilter (object):
                         "don't understand filter %s" % self.filter
 
         if not saved:
-            flags.append (flag_a.copy())
+            flags.append(flag_a.copy())
 
         # this loop combines conditions with "or" or "xor"
         conj = None
         for item in flags:
-            if isinstance (item, np.ndarray):
+            if isinstance(item, np.ndarray):
                 if conj is None:
                     flag = item.copy()
                 elif conj == OR:
-                    flag = np.logical_or (flag, item)
+                    flag = np.logical_or(flag, item)
                 elif conj == XOR:
-                    flag = np.logical_xor (flag, item)
+                    flag = np.logical_xor(flag, item)
                 else:
                     raise RuntimeError, "don't recognize conjunction %s" % conj
                 conj = None
             else:
                 conj = item
 
-        # `flag` is an array of boolean flags, one element for each row of
+        # flag is an array of boolean flags, one element for each row of
         # the TIMELINE extension.  Now we need to find and flag the rows
-        # in the EVENTS extension corresponding to ranges in `flag` that
+        # in the EVENTS extension corresponding to ranges in flag that
         # are True (bad).
         in_bad_interval = False             # initial values
         bad_time_intervals = []
         # indices in TIMELINE extension for a bad interval are ki:kj
-        for k in range (nelem):             # index in timeline column
+        for k in range(nelem):              # index in timeline column
             if flag[k]:
                 if not in_bad_interval:
                     # start a bad time interval
@@ -767,19 +767,19 @@ class TimelineFilter (object):
                 kj = k
                 t0 = time_col[ki]
                 t1 = time_col[kj]
-                (i, j) = ccos.range (self.events_time, t0, t1)
+                (i, j) = ccos.range(self.events_time, t0, t1)
                 self.dq[i:j] |= calcosparam.DQ_BAD_TIME
-                bad_time_intervals.append ((t0, t1))
+                bad_time_intervals.append((t0, t1))
         if in_bad_interval:
             # a bad time interval extends to the end of the exposure
             t0 = time_col[ki]
             t1 = self.events_time[nevents-1]
-            (i, j) = ccos.range (self.events_time, t0, t1)       # ignore j
+            (i, j) = ccos.range(self.events_time, t0, t1)        # ignore j
             self.dq[i:nevents] |= calcosparam.DQ_BAD_TIME
-            bad_time_intervals.append ((t0, t1))
+            bad_time_intervals.append((t0, t1))
 
         history = "%s flagged as bad." % self.filter_str
-        self.fd[0].header.add_history (history)
+        self.fd[0].header.add_history(history)
         if self.verbose:
             print "%s flagged as bad" % self.filter_str
 
@@ -787,9 +787,9 @@ class TimelineFilter (object):
         # an updated list of good time intervals, then write the updated
         # GTI to the file.
         gti = self.recomputeExptime()
-        self.saveNewGTI (gti)
+        self.saveNewGTI(gti)
 
-    def saaFilter (self, filter_col, model):
+    def saaFilter(self, filter_col, model):
         """Flag within the specified SAA contour as bad.
 
         Parameters
@@ -808,45 +808,45 @@ class TimelineFilter (object):
         flag: array_like
             This is a boolean array, one element for each row of the
             TIMELINE table.  True means that HST was within the SAA
-            contour (specified by `model`) at the time corresponding to
+            contour (specified by model) at the time corresponding to
             the TIMELINE row.
         """
 
-        longitude_col = self.fd[self.tl_hdunum].data.field ("longitude")
-        latitude_col  = self.fd[self.tl_hdunum].data.field ("latitude")
+        longitude_col = self.fd[self.tl_hdunum].data.field("longitude")
+        latitude_col  = self.fd[self.tl_hdunum].data.field("latitude")
 
-        nelem = len (longitude_col)
+        nelem = len(longitude_col)
 
-        flag = np.zeros (nelem, dtype=np.bool8)
+        flag = np.zeros(nelem, dtype=np.bool8)
 
-        model_vertices = saamodel.saaModel (model)
-        model_vertices.append (model_vertices[0])       # make a closed loop
-        nvertices = len (model_vertices)
+        model_vertices = saamodel.saaModel(model)
+        model_vertices.append(model_vertices[0])        # make a closed loop
+        nvertices = len(model_vertices)
         # will be unit vectors from center of Earth pointing toward vertices
-        vertices = np.zeros ((nvertices, 3), dtype=np.float64)
+        vertices = np.zeros((nvertices, 3), dtype=np.float64)
         minmax_long = [720., -360.]     # will be minimum, maximum longitudes
         minmax_lat = [90., -90.]        # will be minimum, maximum latitudes
-        for i in range (nvertices):
+        for i in range(nvertices):
             (latitude, longitude) = model_vertices[i]
-            vertices[i] = toRect (longitude, latitude)  # change the order
+            vertices[i] = toRect(longitude, latitude)   # change the order
             if model > 1 and longitude < SAA_LONGITUDE_CUTOFF:
                 longitude += 360.
-            minmax_long[0] = min (longitude, minmax_long[0])
-            minmax_long[1] = max (longitude, minmax_long[1])
-            minmax_lat[0] = min (latitude, minmax_lat[0])
-            minmax_lat[1] = max (latitude, minmax_lat[1])
+            minmax_long[0] = min(longitude, minmax_long[0])
+            minmax_long[1] = max(longitude, minmax_long[1])
+            minmax_lat[0] = min(latitude, minmax_lat[0])
+            minmax_lat[1] = max(latitude, minmax_lat[1])
         middle_long = (minmax_long[0] + minmax_long[1]) / 2.
         middle_lat = (minmax_lat[0] + minmax_lat[1]) / 2.
-        middle_SAA = toRect (middle_long, middle_lat)
+        middle_SAA = toRect(middle_long, middle_lat)
 
         # for each row in TIMELINE table
-        for k in range (nelem):
-            hst = toRect (longitude_col[k], latitude_col[k])
-            flag[k] = testWithinSAA (hst, vertices, middle_SAA)
+        for k in range(nelem):
+            hst = toRect(longitude_col[k], latitude_col[k])
+            flag[k] = testWithinSAA(hst, vertices, middle_SAA)
 
         return flag
 
-    def shift1Info (self, shift1, cutoff):
+    def shift1Info(self, shift1, cutoff):
         """Compute information about the SHIFT1 column in TIMELINE.
 
         Parameters
@@ -870,69 +870,69 @@ class TimelineFilter (object):
         """
 
         # filter = "shift1 > X" is interpreted to mean that events should
-        # be flagged as bad if shift1 - median (shift1) > X * sigma.
+        # be flagged as bad if shift1 - median(shift1) > X * sigma.
         # Clip outliers before computing the value of sigma to use.
 
         SIGMA_CLIP = 5.
         TINY_SIGMA = 0.001
-        median_shift1 = findMedian (shift1)
+        median_shift1 = findMedian(shift1)
         sigma_0 = shift1.std()
         if sigma_0 < TINY_SIGMA:        # this is a test for sigma = 0
-            return (median_shift1, cutoff * TINY_SIGMA)
+            return(median_shift1, cutoff * TINY_SIGMA)
 
-        select = np.ones (len (shift1), dtype=np.bool8)         # all True
+        select = np.ones(len(shift1), dtype=np.bool8)           # all True
         diff = shift1 - median_shift1
-        select = np.where (np.abs (diff) > SIGMA_CLIP * sigma_0, False, select)
+        select = np.where(np.abs(diff) > SIGMA_CLIP * sigma_0, False, select)
 
-        median_shift1 = findMedian (shift1[select])
+        median_shift1 = findMedian(shift1[select])
         sigma_1 = shift1[select].std()
         diff = shift1[select] - median_shift1
-        select = np.where (np.abs (diff) > SIGMA_CLIP * sigma_1, False, select)
+        select = np.where(np.abs(diff) > SIGMA_CLIP * sigma_1, False, select)
 
-        median_shift1 = findMedian (shift1[select])
+        median_shift1 = findMedian(shift1[select])
         sigma_2 = shift1[select].std()
 
         return (median_shift1, cutoff * sigma_2)
 
-    def recomputeExptime (self):
+    def recomputeExptime(self):
         """Compute the exposure time and update the EXPTIME keyword.
 
         Returns
         -------
         gti: list of two-element lists
-            Each element of `gti` is a two-element list, the start and stop
+            Each element of gti is a two-element list, the start and stop
             times (in seconds since EXPSTART) for a "good time interval."
         """
 
         if self.events_time is None:
             events_hdu = self.fd[self.events_hdunum]
-            self.events_time = cosutil.getColCopy (data=events_hdu.data,
-                                                   column="time")
-        nevents = len (self.events_time)
-        zero = np.zeros (1, dtype=np.int8)
-        one = np.ones (1, dtype=np.int8)
+            self.events_time = cosutil.getColCopy(data=events_hdu.data,
+                                                  column="time")
+        nevents = len(self.events_time)
+        zero = np.zeros(1, dtype=np.int8)
+        one = np.ones(1, dtype=np.int8)
         # flag1 and flag2 are boolean arrays.  An element will be True if
         # the corresponding element of the DQ column (self.dq) is flagged as
         # being within a bad time interval (flag1) or as a burst (flag2).
-        flag1 = np.greater (np.bitwise_and (self.dq,
-                                            calcosparam.DQ_BAD_TIME),
-                            0)
-        flag2 = np.greater (np.bitwise_and (self.dq, calcosparam.DQ_BURST), 0)
-        flag = np.logical_or (flag1, flag2)
+        flag1 = np.greater(np.bitwise_and(self.dq,
+                                          calcosparam.DQ_BAD_TIME),
+                           0)
+        flag2 = np.greater(np.bitwise_and(self.dq, calcosparam.DQ_BURST), 0)
+        flag = np.logical_or(flag1, flag2)
         # iflag is an array of 8-bit signed integer flags, 1 where self.dq
         # includes either the burst flag or the bad-time flag, 0 elsewhere.
-        iflag = np.where (flag, one, zero)
-        del (flag, flag1, flag2)
+        iflag = np.where(flag, one, zero)
+        del(flag, flag1, flag2)
 
         # dflag is non-zero (+1 or -1) at elements where iflag changes
         # from 0 to 1 or from 1 to 0.
         dflag = iflag[1:] - iflag[0:-1]
         # non_zero will be something like:  (array([ 2,  7, 11, 13]),)
         # For each value i in non_zero[0], dq[i+1] differs from dq[i].
-        non_zero = np.where (dflag != 0)
+        non_zero = np.where(dflag != 0)
         dflag_nz = dflag[non_zero]
         nz = non_zero[0]                # extract the array of indices
-        n_indices = len (nz)
+        n_indices = len(nz)
 
         gti_indices = []                # list of good time intervals
         # it_begin and it_end are the indices in events_time of the
@@ -941,54 +941,54 @@ class TimelineFilter (object):
         it_end = None
         if iflag[0] == 0:
             it_begin = 0
-        for i in range (n_indices):
+        for i in range(n_indices):
             if dflag[nz[i]] > 0:        # end of a good time interval
                 it_end = nz[i]
-                gti_indices.append ([it_begin, it_end])
+                gti_indices.append([it_begin, it_end])
             elif dflag[nz[i]] < 0:      # end of a bad time interval
                 it_begin = nz[i] + 1
                 it_end = None
             else:
                 print "internal error:  dflag = %d" % dflag[nz[i]]
         if it_end is None and it_begin is not None:
-            gti_indices.append ([it_begin, nevents-1])
+            gti_indices.append([it_begin, nevents-1])
 
         # Add up the good time intervals, and create a GTI list.
         gti = []
         for (it_begin, it_end) in gti_indices:
-            gti.append ([self.events_time[it_begin],
-                         self.events_time[it_end]])
+            gti.append([self.events_time[it_begin],
+                        self.events_time[it_end]])
 
         # The original GTI table (self.first_gti) may exclude some region or
         # regions (e.g. if data are ignored when the buffer is full), and
         # these would not show up in the DQ column if there were no events
         # during those time intervals.  To account for this, use the original
         # GTI table as a mask for the gti that we just found.
-        gti = self.mergeGTI (self.first_gti, gti)
+        gti = self.mergeGTI(self.first_gti, gti)
         # Round off the start and stop times to three decimals.
-        gti = self.roundGTI (gti, precision=3)
+        gti = self.roundGTI(gti, precision=3)
 
         exptime = 0.
         for (t0, t1) in gti:
             exptime += (t1 - t0)
 
         # Update the EXPTIME keyword, and also EXPTIMEA or EXPTIMEB for FUV.
-        detector = self.fd[0].header.get ("detector", default="missing")
+        detector = self.fd[0].header.get("detector", default="missing")
         if detector == "FUV":
-            segment = self.fd[0].header.get ("segment", default="missing")
+            segment = self.fd[0].header.get("segment", default="missing")
             exptime_key = "exptime" + segment[-1].lower()
         else:
             exptime_key = "exptime"
-        old_exptime = self.fd[self.events_hdunum].header.get (exptime_key, 0.)
-        self.fd[self.events_hdunum].header.update (exptime_key, exptime)
+        old_exptime = self.fd[self.events_hdunum].header.get(exptime_key, 0.)
+        self.fd[self.events_hdunum].header.update(exptime_key, exptime)
         if detector == "FUV":
-            self.fd[self.events_hdunum].header.update ("exptime", exptime)
-        if self.verbose and abs (exptime - old_exptime) > 0.032:
+            self.fd[self.events_hdunum].header.update("exptime", exptime)
+        if self.verbose and abs(exptime - old_exptime) > 0.032:
             print "EXPTIME changed from %.8g to %.8g" % (old_exptime, exptime)
 
         return gti
 
-    def mergeGTI (self, first_gti, second_gti, precision=None):
+    def mergeGTI(self, first_gti, second_gti, precision=None):
         """Merge two good time intervals tables.
 
         Parameters
@@ -1003,7 +1003,7 @@ class TimelineFilter (object):
 
         Returns:
             A new gti list, consisting of intervals that overlap both
-            `first_gti` and `second_gti`.
+            first_gti and second_gti.
         """
 
         gti = []
@@ -1014,22 +1014,22 @@ class TimelineFilter (object):
                 if start_2 >= stop_1:
                     continue
                 if start_2 >= start_1 and stop_2 <= stop_1:
-                    gti.append ([start_2, stop_2])
+                    gti.append([start_2, stop_2])
                 elif start_2 <= start_1 and stop_2 <= stop_1:
                     # we already know that stop_2 > start_1
-                    gti.append ([start_1, stop_2])
+                    gti.append([start_1, stop_2])
                 elif start_2 >= start_1 and stop_2 > stop_1:
                     # we already know that start_2 < stop_1
-                    gti.append ([start_2, stop_1])
+                    gti.append([start_2, stop_1])
                 elif start_2 <= start_1 and stop_2 >= stop_1:
-                    gti.append ([start_1, stop_1])
+                    gti.append([start_1, stop_1])
                 else:
                     print "oops ... confused!"
 
         return gti
 
-    def roundGTI (self, input_gti, precision=3):
-        """Round the start and stop times to `precision` decimals.
+    def roundGTI(self, input_gti, precision=3):
+        """Round the start and stop times to precision decimals.
 
         Parameters
         ----------
@@ -1045,13 +1045,13 @@ class TimelineFilter (object):
 
         gti = []
         for (t0, t1) in input_gti:
-            t0 = round (t0, precision)
-            t1 = round (t1, precision)
-            gti.append ([t0, t1])
+            t0 = round(t0, precision)
+            t1 = round(t1, precision)
+            gti.append([t0, t1])
 
         return gti
 
-    def saveNewGTI (self, gti):
+    def saveNewGTI(self, gti):
         """Append new GTI information as a BINTABLE extension.
 
         Create and save a GTI extension.  If there is no GTI extension,
@@ -1065,17 +1065,17 @@ class TimelineFilter (object):
             A list of [start, stop] good time intervals.
         """
 
-        len_gti = len (gti)
+        len_gti = len(gti)
         col = []
-        col.append (pyfits.Column (name="START", format="1D", unit="s"))
-        col.append (pyfits.Column (name="STOP", format="1D", unit="s"))
-        cd = pyfits.ColDefs (col)
-        hdu = pyfits.new_table (cd, nrows=len_gti)
-        hdu.header.update ("extname", "GTI")
+        col.append(pyfits.Column(name="START", format="1D", unit="s"))
+        col.append(pyfits.Column(name="STOP", format="1D", unit="s"))
+        cd = pyfits.ColDefs(col)
+        hdu = pyfits.new_table(cd, nrows=len_gti)
+        hdu.header.update("extname", "GTI")
         outdata = hdu.data
-        startcol = outdata.field ("START")
-        stopcol = outdata.field ("STOP")
-        for i in range (len_gti):
+        startcol = outdata.field("START")
+        stopcol = outdata.field("STOP")
+        for i in range(len_gti):
             startcol[i] = gti[i][0]
             stopcol[i] = gti[i][1]
 
@@ -1084,24 +1084,24 @@ class TimelineFilter (object):
             inplace = False             # create a new GTI extension
         else:
             last_gti = self.fd[self.gti_hdunum]
-            extver = last_gti.header.get ("extver", 1)
+            extver = last_gti.header.get("extver", 1)
             # if there are already two GTI extensions, overwrite the last one
             inplace = (extver > 1)
             if not inplace:
                 extver += 1
 
-        hdu.header.update ("extver", extver)
+        hdu.header.update("extver", extver)
         if inplace:
             self.fd[self.gti_hdunum] = hdu
             if self.verbose:
                 print "GTI extension updated in-place"
         else:
-            self.fd.append (hdu)
-            self.fd[0].header.update ("nextend", len(self.fd)-1)
+            self.fd.append(hdu)
+            self.fd[0].header.update("nextend", len(self.fd)-1)
             if self.verbose:
                 print "New GTI extension appended"
 
-    def findExtensions (self):
+    def findExtensions(self):
         """Find EVENTS, GTI and TIMELINE extensions.
 
         This checks each extension in the input file to find all
@@ -1117,8 +1117,8 @@ class TimelineFilter (object):
             self.tl_list            TIMELINE tables
 
         Each element is a two-element list (extver and hdunum) that
-        identifies one extension in the input file.  `extver` is the
-        value of keyword EXTVER, the extension version number.  `hdunum`
+        identifies one extension in the input file.  extver is the
+        value of keyword EXTVER, the extension version number.  hdunum
         is the header/data unit number of the extension (primary header
         is 0).
         """
@@ -1126,21 +1126,21 @@ class TimelineFilter (object):
         self.events_list = []
         self.gti_list = []
         self.tl_list = []
-        for hdunum in range (1, len(self.fd)):
-            extname = self.fd[hdunum].header.get ("extname", "MISSING")
+        for hdunum in range(1, len(self.fd)):
+            extname = self.fd[hdunum].header.get("extname", "MISSING")
             extname = extname.upper()
             if extname == "EVENTS" or extname == "GTI" or \
                extname == "TIMELINE":
-                extver = self.fd[hdunum].header.get ("extver", 1)
+                extver = self.fd[hdunum].header.get("extver", 1)
                 if extname == "EVENTS":
-                    self.events_list.append ([extver, hdunum])
+                    self.events_list.append([extver, hdunum])
                 if extname == "GTI":
-                    self.gti_list.append ([extver, hdunum])
+                    self.gti_list.append([extver, hdunum])
                 if extname == "TIMELINE":
-                    self.tl_list.append ([extver, hdunum])
+                    self.tl_list.append([extver, hdunum])
         self.gti_list.sort()            # sort by EXTVER
 
-    def findHduNum (self):
+    def findHduNum(self):
         """Select a header/data unit from each list.
 
         A RuntimeError exception will be raised if there is more than one
@@ -1160,9 +1160,9 @@ class TimelineFilter (object):
         self.tl_list.
         """
 
-        if len (self.events_list) > 1:
-            raise RuntimeError, "%d EVENTS tables in %s" % \
-                                (len (self.events_list), self.input)
+        if len(self.events_list) > 1:
+            raise(RuntimeError, "%d EVENTS tables in %s" %
+                  (len(self.events_list), self.input))
 
         if self.events_list:
             # extract hdunum from [extver, hdunum] for the EVENTS HDU
@@ -1178,36 +1178,36 @@ class TimelineFilter (object):
             self.first_gti_hdunum = None
             self.gti_hdunum = None
 
-        if len (self.tl_list) > 1:
-            raise RuntimeError, "%d TIMELINE tables in %s" % \
-                                (len (self.tl_list), self.input)
+        if len(self.tl_list) > 1:
+            raise(RuntimeError, "%d TIMELINE tables in %s" %
+                  (len(self.tl_list), self.input))
         if self.tl_list:
             # extract hdunum from [extver, hdunum] for the TIMELINE HDU
             self.tl_hdunum = self.tl_list[0][1]
         else:
             self.tl_hdunum = None
 
-    def getFirstGTI (self):
+    def getFirstGTI(self):
         """Get the contents of the first GTI table.
 
         Attribute first_gti will be assigned by this method.
         """
 
         data = self.fd[self.first_gti_hdunum].data
-        startcol = data.field ("START")
-        stopcol = data.field ("STOP")
+        startcol = data.field("START")
+        stopcol = data.field("STOP")
         self.first_gti = []
-        for i in range (len (data)):
-            self.first_gti.append ([startcol[i], stopcol[i]])
+        for i in range(len(data)):
+            self.first_gti.append([startcol[i], stopcol[i]])
 
-    def writeNewOutputFile (self):
+    def writeNewOutputFile(self):
         """Write the current HDUList to a new output file."""
 
-        self.fd[0].header.update ("filename",
-                                  os.path.basename (self.output))
+        self.fd[0].header.update("filename",
+                                 os.path.basename(self.output))
         if self.verbose:
             print "Writing to", self.output
-        self.fd.writeto (self.output)
+        self.fd.writeto(self.output)
 
 #
 #### Interfaces used by TEAL
@@ -1216,9 +1216,9 @@ def run(configobj=None):
     """TEAL interface for running this code."""
     ### version 2011 June 29
 
-    tlf = TimelineFilter (configobj["input"], configobj["output"],
-                          filter=configobj["filter"],
-                          verbose=configobj["verbose"])
+    tlf = TimelineFilter(configobj["input"], configobj["output"],
+                         filter=configobj["filter"],
+                         verbose=configobj["verbose"])
 
 def getHelpAsString(fulldoc=True):
     """Return help info from <module>.help in the script directory"""
@@ -1231,8 +1231,6 @@ def getHelpAsString(fulldoc=True):
     helpString += "Version " + __version__ + "\n"
 
     helpString += teal.getHelpFileAsString(__taskname__, __file__)
-
-    helpString += __usage__
 
     return helpString
 

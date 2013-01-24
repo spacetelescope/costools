@@ -1,7 +1,7 @@
 This program reads a COS corrtag file and sets flags in the DQ column
 of the EVENTS extension depending on the filter that was specified.
 
-:Author: Phil Hodge, STScI, April 2011.
+:Author: Phil Hodge, STScI, January 2013.
 
 Notes
 -----
@@ -17,8 +17,8 @@ input: str
     The name of the input corrtag table.
 
 output: str
-    The name of an optional output file.  If `output` is "", the input
-    file will be modified in-place (but see `filter` for an exception).
+    The name of an optional output file.  If output is "", the input
+    file will be modified in-place (but see filter for an exception).
 
 filter: str
     One or more conditions using columns in the TIMELINE extension of
@@ -30,7 +30,7 @@ filter: str
 
     If filter = "clear" or "reset", however, the bad time interval flag
     will be cleared from the DQ column.  If filter = "info", or if both
-    `output` and `filter` are "", information about the input file will be
+    output and filter are "", information about the input file will be
     printed to the standard output; this is the exception mentioned above,
     where the input file will not be modified even if output = "".
 
@@ -59,7 +59,7 @@ filter: str
         (a > w and b < x) or (c > y and d < z)
 
 verbose: bool
-    If `verbose` is True, messages will be printed to the standard output.
+    If verbose is True, messages will be printed to the standard output.
 
 Examples
 --------
