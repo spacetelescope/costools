@@ -1,0 +1,62 @@
+This function can be used to split a corrtag file into two or more files
+by time.
+
+:Author: Phil Hodge, STScI, October 2013.
+
+Notes
+-----
+The input must be a corrtag file; splittag will not run on a raw file.
+
+You can specify starttime, increment, and endtime, or you can specify
+time_list.  These are mutually exclusive ways to describe how the input
+file should be split.
+
+Parameters
+----------
+infiles: str
+    Name of input file, possibly including a wildcard character.
+
+outroot: str
+    Root name with which to construct output file names.  The output file
+    names will be <outroot>_i_corrtag_a.fits (or _corrtag_b.fits, or
+    _corrtag.fits), where i = 1, 2, 3, etc.  However, if there is already
+    a file with the same name, a new name will be constructed by inserting
+    an additional "_1" (or "_2", etc.) before "_corrtag".
+
+starttime: float or None
+    Time at beginning of first interval, or None if time_list was
+    specified.
+
+increment: float or None
+    Length of each time interval, or None if time_list was specified.
+
+endtime: float or None
+    Time at end of last interval, or None if time_list is specified.
+
+time_list: str
+    String containing explicit times of beginning of each time interval
+    and end of the last interval; the first time may be given as "start"
+    (time=0, i.e. at EXPSTART), and the last time may be given as either
+    "stop" or "end" (time of last event in TIME column).
+
+verbosity: int
+    This indicates that very few (verbosity=0), a lot (1), or even more (2)
+    messages should be printed to the standard output.  The default is 1.
+
+Examples
+--------
+From Python:
+
+>>> from stsci.tools import teal
+>>> import costools
+>>> teal.teal("splittag")
+
+From PyRAF:
+
+--> import costools
+--> teal splittag
+--> epar splittag
+
+--> costools.splittag("rootname_corrtag_a.fits", "split3s",
+                      starttime=0., increment=3., endtime=1000.,
+                      time_list="")

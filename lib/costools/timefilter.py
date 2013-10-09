@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+
 """timefilter - filter a corrtag table based on the TIMELINE extension"""
 
 from __future__ import division         # confidence high
@@ -42,7 +43,7 @@ import math
 import os
 import sys
 import numpy as np
-import pyfits
+import astropy.io.fits as fits
 from stsci.tools import parseinput, teal
 from calcos import ccos
 from calcos import calcosparam, cosutil
@@ -50,8 +51,8 @@ import saamodel
 
 __taskname__ = "timefilter"
 __version__ = "0.4"
-__vdate__ = "2013 January 24"
-__author__ = "Phil Hodge, STScI, August 2012."
+__vdate__ = "2013 October 9"
+__author__ = "Phil Hodge, STScI, October, 2013."
 
 DEGtoRAD = math.pi / 180.
 TWOPI = 2. * math.pi
@@ -73,7 +74,9 @@ def main():
     """Filter a corrtag file using its timeline extension."""
 
     try:
-        (options, pargs) = getopt.getopt(sys.argv[1:], "hv", ["help"])
+        (options, pargs) = getopt.getopt(sys.argv[1:], "hrv",
+                                         ["version",
+                                          "help"])
     except Exception, error:
         print str(error)
         prtOptions()
@@ -82,6 +85,12 @@ def main():
     help = False
     verbose = False
     for i in range(len(options)):
+        if options[i][0] == "--version":
+            print("%s" % __version__)
+            return
+        if options[i][0] == "-r":
+            print("%s (%s)" % (__version__, __vdate__))
+            return
         if options[i][0] == "-h":
             help = True
         elif options[i][0] == "--help":
@@ -123,6 +132,8 @@ def prtOptions():
     print "The command-line arguments are:"
     print "  -h (print help)"
     print "  --help (print help)"
+    print("  -r (print the full version string)")
+    print("  --version (print the version number)")
     print "  -v (print messages)"
     print "  input:  input corrtag file name"
     print "  output:  output corrtag file name, or '' or none"
@@ -398,7 +409,7 @@ class TimelineFilter(object):
         if self.output and os.access(self.output, os.F_OK):
             raise RuntimeError, "output file %s already exists" % self.output
 
-        self.fd = pyfits.open(self.input, mode=iomode)
+        self.fd = fits.open(self.input, mode=iomode)
         if iomode == "update" and self.verbose:
             print "Input file opened read/write"
         self.findExtensions()
@@ -1067,10 +1078,10 @@ class TimelineFilter(object):
 
         len_gti = len(gti)
         col = []
-        col.append(pyfits.Column(name="START", format="1D", unit="s"))
-        col.append(pyfits.Column(name="STOP", format="1D", unit="s"))
-        cd = pyfits.ColDefs(col)
-        hdu = pyfits.new_table(cd, nrows=len_gti)
+        col.append(fits.Column(name="START", format="1D", unit="s"))
+        col.append(fits.Column(name="STOP", format="1D", unit="s"))
+        cd = fits.ColDefs(col)
+        hdu = fits.new_table(cd, nrows=len_gti)
         hdu.header.update("extname", "GTI")
         outdata = hdu.data
         startcol = outdata.field("START")
@@ -1214,9 +1225,10 @@ class TimelineFilter(object):
 #
 def run(configobj=None):
     """TEAL interface for running this code."""
-    ### version 2011 June 29
+    ### version 2013 October 9
 
-    tlf = TimelineFilter(configobj["input"], configobj["output"],
+    tlf = TimelineFilter(input=configobj["input"],
+                         output=configobj["output"],
                          filter=configobj["filter"],
                          verbose=configobj["verbose"])
 
