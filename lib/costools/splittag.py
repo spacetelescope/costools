@@ -45,7 +45,7 @@ import costoolsutil
 
 __taskname__ = "splittag"
 __version__ = "1.0"
-__vdate__ = "2013 October 9"
+__vdate__ = "2013 October 10"
 __author__ = "Phil Hodge, STScI, October 2013."
 
 def main():
@@ -148,9 +148,7 @@ def prtOptions():
 def splittag(infiles, outroot, starttime=None, increment=None, endtime=None,
              time_list=None, verbosity=calcosparam.VERBOSE):
 
-    if time_list:
-        time_list = costoolsutil.splitInputString(time_list)
-    else:
+    if not time_list:
         time_list = None
 
     SPLT.splittag(infiles=infiles, outroot=outroot,
