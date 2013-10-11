@@ -1,0 +1,52 @@
+This is the costools interface to the 1-D spectral extraction function
+from CalCOS.
+
+:Author: Phil Hodge, STScI, September 2013.
+
+Parameters
+----------
+input: str
+    One or more comma and/or blank separated corrtag file names.
+    Environment variables and wildcards may be used.
+
+outdir: str
+    The name of an optional output directory.  If outdir is "", the output
+    files will be written to the directory that contains the input files.
+    If outdir was specified but no directory of that name exists, it will
+    be created.
+
+find: bool
+    If `find` is True, the 1-D spectrum or spectra will be extracted at
+    the Y (XD) location at which the spectra were actually found (but see
+    `cutoff` below).  If `find` is False (the default), calcos will find
+    the spectra and print the Y locations, but the spectra will be
+    extracted where they were expected, based on the wavecal (OSM) offsets
+    and the locations given in the B_SPEC column in the XTRACTAB
+    (_1dx.fits) table.
+
+cutoff: float or int
+    If `find` is True, 
+
+verbosity: int
+    This indicates very few (verbosity=0), a lot (1), or even more (2)
+    messages should be printed to the standard output.  The default is 1.
+
+Examples
+--------
+From Python:
+
+>>> from stsci.tools import teal
+>>> import costools
+>>> teal.teal("x1dcorr")
+
+From PyRAF:
+
+--> import costools
+--> teal x1dcorr
+--> epar x1dcorr
+
+--> costools.x1dcorr("rootname_corrtag_a.fits", "out/")
+
+From the Unix command line:
+
+% <path>x1dcorr.py -v -o out/ rootname_corrtag_a.fits

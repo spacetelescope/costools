@@ -1,0 +1,9 @@
+_task_name_ = string_kw(default="splittag")
+infiles = string_kw(default="", comment="Input file, optionally including wildcards")
+outroot = string_kw(default="", comment="Root name for output file names")
+starttime = float_or_none_kw(default=None, comment="Time at beginning of first interval")
+increment = float_or_none_kw(default=None, comment="Length of each time interval")
+endtime = float_or_none_kw(default=None, comment="Time at end of last interval")
+time_list = string_kw(default="", comment="Time at beginning of each time interval and end of the last interval")
+verbosity = option_kw(0, 1, 2, default=1, comment="Print a little or a lot?")
+[ _RULES_ ]

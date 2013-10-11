@@ -1,0 +1,10 @@
+_task_name_ = string_kw(default="x1dcorr")
+input = string_kw(default="", comment="Input asn or raw file(s)")
+outdir = string_kw(default="", comment="Optional output directory")
+update_input = boolean_kw(default=False, comment="Update keywords in the input files?")
+find = boolean_kw(default=False, comment="Find target in XD?")
+cutoff = float_or_none_kw(default=None, comment="N-sigma cutoff for find")
+location = string_kw(default="", comment="Locations at which to extract spectra")
+extrsize = string_kw(default="", comment="Extraction sizes")
+verbosity = option_kw(0, 1, 2, default=1, comment="Print a little or a lot?")
+[ _RULES_ ]
