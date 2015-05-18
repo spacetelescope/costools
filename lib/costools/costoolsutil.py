@@ -4,6 +4,7 @@
 # expand environment variables
 # create output directory if it doesn't already exist
 
+from __future__ import print_function
 import glob
 import os
 

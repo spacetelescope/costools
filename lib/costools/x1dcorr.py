@@ -2,7 +2,7 @@
 
 """x1dcorr - Extract 1-D spectra."""
 
-from __future__ import division         # confidence high
+from __future__ import absolute_import, division, print_function # confidence high
 
 __usage__ = """
 
@@ -52,7 +52,7 @@ import numpy as np
 from stsci.tools import parseinput, teal
 from calcos import x1d as X1D
 from calcos import calcosparam
-import costoolsutil
+from . import costoolsutil
 
 __taskname__ = "x1dcorr"
 __version__ = "1.0"
@@ -67,8 +67,8 @@ def main():
                                          ["version",
                                           "help",
                                           "find="])
-    except Exception, error:
-        print str(error)
+    except Exception as error:
+        print(str(error))
         prtOptions()
         return
 
@@ -121,10 +121,10 @@ def main():
                 find = True
 
     if help:
-        print getHelpAsString()
-        # print __doc__
-        # print __usage__
-        # print "\t", __version__ + " (" + __vdate__ + ")"
+        print(getHelpAsString())
+        # print(__doc__)
+        # print(__usage__)
+        # print("\t", __version__ + " (" + __vdate__ + ")")
         return
 
     nargs = len(pargs)
@@ -220,7 +220,7 @@ def getHelpAsString(fulldoc=True):
 # xxx x1dcorr.__doc__ = getHelpAsString(fulldoc=False)
 
 def help():
-    print getHelpAsString()
+    print(getHelpAsString())
 
 if __name__ == "__main__":
 
