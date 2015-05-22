@@ -2,7 +2,7 @@
 
 """splittag - Split TIME-TAG files into multiple files."""
 
-from __future__ import division         # confidence unknown
+from __future__ import absolute_import, division, print_function # confidence unknown
 
 __usage__ = """
 
@@ -41,7 +41,7 @@ from stsci.tools import parseinput, teal
 import getopt
 from calcos import calcosparam
 from calcos import splittag as SPLT
-import costoolsutil
+from . import costoolsutil
 
 __taskname__ = "splittag"
 __version__ = "1.0"
@@ -55,8 +55,8 @@ def main():
         (options, pargs) = getopt.getopt(args, "hqvr",
                                          ["version",
                                           "help"])
-    except Exception, error:
-        print str(error)
+    except Exception(error):
+        print(str(error))
         prtOptions()
         return
 
@@ -86,10 +86,10 @@ def main():
             verbosity = calcosparam.VERY_VERBOSE
 
     if help:
-        print getHelpAsString()
-        # print __doc__
-        # print __usage__
-        # print "\t", __version__ + " (" + __vdate__ + ")"
+        print(getHelpAsString())
+        # print(__doc__)
+        # print(__usage__)
+        # print("\t", __version__ + " (" + __vdate__ + ")")
         return
 
     nargs = len(pargs)
@@ -189,7 +189,7 @@ def getHelpAsString(fulldoc=True):
 # xxx splittag.__doc__ = getHelpAsString(fulldoc=False)
 
 def help():
-    print getHelpAsString()
+    print(getHelpAsString())
 
 if __name__ == "__main__":
 

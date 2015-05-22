@@ -586,12 +586,12 @@ def saaModel(model):
              (-26.0,        276.4),
              (-28.6,        276.7)]}
 
-    keys = saa_models.keys()
+    keys = list(saa_models.keys())
     keys.sort()
     min_keys = min (keys)
     max_keys = max (keys)
     if model not in keys:
-        raise KeyError, "model %d not found in keys (%d - %d)" % \
-            (model, min_keys, max_keys)
+        raise KeyError("model %d not found in keys (%d - %d)" % \
+            (model, min_keys, max_keys))
 
     return saa_models[model]

@@ -1,10 +1,10 @@
-from __future__ import division         # confidence high
+from __future__ import absolute_import, division         # confidence high
 
 from .version import *
 
-import timefilter
-import splittag
-import x1dcorr
+from . import timefilter
+from . import splittag
+from . import x1dcorr
 
 # These lines allow TEAL to print out the names of TEAL-enabled tasks
 # upon importing this package.

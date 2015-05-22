@@ -2,7 +2,7 @@
 
 """timefilter - filter a corrtag table based on the TIMELINE extension"""
 
-from __future__ import division         # confidence high
+from __future__ import absolute_import, division, print_function # confidence high
 
 __usage__ = """
 
@@ -47,7 +47,7 @@ import astropy.io.fits as fits
 from stsci.tools import parseinput, teal
 from calcos import ccos
 from calcos import calcosparam, cosutil
-import saamodel
+from . import saamodel
 
 __taskname__ = "timefilter"
 __version__ = "0.4"
@@ -77,8 +77,8 @@ def main():
         (options, pargs) = getopt.getopt(sys.argv[1:], "hrv",
                                          ["version",
                                           "help"])
-    except Exception, error:
-        print str(error)
+    except Exception as error:
+        print(str(error))
         prtOptions()
         return
 
@@ -99,10 +99,10 @@ def main():
             verbose = True
 
     if help:
-        print getHelpAsString()
-        # print __doc__
-        # print __usage__
-        # print "\t", __version__ + " (" + __vdate__ + ")"
+        print(getHelpAsString())
+        # print(__doc__)
+        # print(__usage__)
+        # print("\t", __version__ + " (" + __vdate__ + ")")
         return
 
     # timefilter.py input                       # to just print info
@@ -129,20 +129,20 @@ def main():
 def prtOptions():
     """Print a list of command-line options and arguments."""
 
-    print "The command-line arguments are:"
-    print "  -h (print help)"
-    print "  --help (print help)"
+    print("The command-line arguments are:")
+    print("  -h (print help)")
+    print("  --help (print help)")
     print("  -r (print the full version string)")
     print("  --version (print the version number)")
-    print "  -v (print messages)"
-    print "  input:  input corrtag file name"
-    print "  output:  output corrtag file name, or '' or none"
-    print "      if output was not specified, the input file will be modified"
-    print "      in-place (unless filter was also not specified, equivalent to"
-    print "      filter='info')"
-    print "  filter:  column name, relation, cutoff value"
-    print "      e.g. 'sun_alt > -0.5 or ly_alpha > 2'"
-    print "      or 'info' or 'reset' ('clear' is synonymous with 'reset')"
+    print("  -v (print messages)")
+    print("  input:  input corrtag file name")
+    print("  output:  output corrtag file name, or '' or none")
+    print("      if output was not specified, the input file will be modified")
+    print("      in-place (unless filter was also not specified, equivalent to")
+    print("      filter='info')")
+    print("  filter:  column name, relation, cutoff value")
+    print("      e.g. 'sun_alt > -0.5 or ly_alpha > 2'")
+    print("      or 'info' or 'reset' ('clear' is synonymous with 'reset')")
 
 def expandFilename(filename):
     """Expand environment variables to get the real file name.
@@ -174,8 +174,8 @@ def expandFilename(filename):
         if count >= MAX_COUNT:
             break
     if not done:
-        raise RuntimeError, "%d iterations exceeded while expanding " \
-                "variables in file name %s" % (MAX_COUNT, filename)
+        raise RuntimeError("%d iterations exceeded while expanding " 
+                "variables in file name %s" % (MAX_COUNT, filename))
     fname = os.path.abspath(fname)              # ../file
     fname = os.path.expanduser(fname)           # ~/file
     real_file_name = os.path.normpath(fname)    # remove redundant strings
@@ -390,7 +390,7 @@ class TimelineFilter(object):
 
         self.input = expandFilename(input)
         if self.verbose:
-            print "Input file", self.input
+            print("Input file", self.input)
         self.output = output
         if self.output is not None:
             self.output = expandFilename(output)
@@ -407,11 +407,11 @@ class TimelineFilter(object):
 
         # If output was specified, check that it doesn't already exist.
         if self.output and os.access(self.output, os.F_OK):
-            raise RuntimeError, "output file %s already exists" % self.output
+            raise RuntimeError("output file %s already exists" % self.output)
 
         self.fd = fits.open(self.input, mode=iomode)
         if iomode == "update" and self.verbose:
-            print "Input file opened read/write"
+            print("Input file opened read/write")
         self.findExtensions()
         self.findHduNum()
 
@@ -421,8 +421,8 @@ class TimelineFilter(object):
             self.dq = self.fd[self.events_hdunum].data.field("dq")
         except (KeyError, AttributeError):
             self.fd.close()
-            raise RuntimeError, \
-                "The input %s does not appear to be a corrtag file." % input
+            raise RuntimeError("The input %s does not appear to be a corrtag file."
+                               % input)
 
         # Assign self.first_gti from the first GTI table in the input file.
         self.getFirstGTI()
@@ -501,12 +501,12 @@ class TimelineFilter(object):
             elif colname_l == "saa":
                 relation = None
                 if i+1 >= nwords:
-                    raise RuntimeError, error_msg
+                    raise RuntimeError(error_msg)
                 cutoff = int(words[i+1])        # SAA model number
                 delta_i = 2
             else:
                 if i+2 >= nwords:
-                    raise RuntimeError, error_msg
+                    raise RuntimeError(error_msg)
                 relation = words[i+1]           # ">", "<", etc.
                 cutoff = float(words[i+2])
                 delta_i = 3
@@ -527,7 +527,7 @@ class TimelineFilter(object):
                 elif colname_l == "saa":        # "column name" given as "saa"
                     relation_fcn = self.saaFilter
                 else:
-                    raise RuntimeError, error_msg
+                    raise RuntimeError(error_msg)
                 self.filter.append((colname, relation_fcn, cutoff))
 
             i += delta_i
@@ -544,19 +544,19 @@ class TimelineFilter(object):
          - The minimum, maximum, median, of shift1, ly_alpha, darkrate.
         """
 
-        print "input =", self.input
+        print("input =", self.input)
         if self.output is not None:
-            print "output =", self.output
+            print("output =", self.output)
         if self.gti_hdunum is None:
-            print "no GTI extension"
+            print("no GTI extension")
         else:
             gti = self.fd[self.gti_hdunum].data
             if gti is None:
-                print "GTI:  no good time intervals"
+                print("GTI:  no good time intervals")
             else:
-                print "GTI:  start     stop"
+                print("GTI:  start     stop")
                 for i in range(len(gti)):
-                    print "%11.3f %8.3f" % (gti[i][0], gti[i][1])
+                    print("%11.3f %8.3f" % (gti[i][0], gti[i][1]))
 
         events_hdu = self.fd[self.events_hdunum]
         dq = events_hdu.data.field("dq")
@@ -564,20 +564,20 @@ class TimelineFilter(object):
                            1., 0.)
         n_bad = dq_2048.sum()
         n_total = float(len(dq))
-        print "%.1f %% of DQ column flagged with %d" % \
-               (100. * n_bad / n_total, calcosparam.DQ_BAD_TIME)
+        print("%.1f %% of DQ column flagged with %d" % 
+               (100. * n_bad / n_total, calcosparam.DQ_BAD_TIME))
         del(dq, dq_2048)
-        print ""
+        print("")
 
         if self.tl_hdunum is None:
-            print "no TIMELINE extension"
+            print("no TIMELINE extension")
             return
 
         tl_hdunum = self.tl_hdunum
         # TIME column in the TIMELINE extension
         time_col = self.fd[tl_hdunum].data.field("time")
         nelem = len(time_col)
-        print "%d rows in TIMELINE" % nelem
+        print("%d rows in TIMELINE" % nelem)
         if nelem <= 0:
             return
 
@@ -594,28 +594,28 @@ class TimelineFilter(object):
         median_ly_alpha = findMedian(ly_alpha_col)
         median_darkrate = findMedian(darkrate_col)
 
-        print "column   beginning    middle       end"
-        print "time      %8.2f  %8.2f  %8.2f" % \
-                (time_col[0], time_col[middle], time_col.max())
-        print "sun_alt    %7.2f   %7.2f   %7.2f" % \
-                (sun_alt_col[0], sun_alt_col[middle], sun_alt_col[-1])
-        print "target_alt %7.2f   %7.2f   %7.2f" % \
-                (target_alt_col[0], target_alt_col[middle], target_alt_col[-1])
-        print "longitude  %7.2f   %7.2f   %7.2f" % \
-                (longitude_col[0], longitude_col[middle], longitude_col[-1])
-        print "latitude   %7.2f   %7.2f   %7.2f" % \
-                (latitude_col[0], latitude_col[middle], latitude_col[-1])
-        print "shift1     %7.2f   %7.2f   %7.2f" % \
-                (shift1_col[0], shift1_col[middle], shift1_col[-1])
+        print( "column   beginning    middle       end")
+        print("time      %8.2f  %8.2f  %8.2f" % 
+                (time_col[0], time_col[middle], time_col.max()))
+        print("sun_alt    %7.2f   %7.2f   %7.2f" % 
+                (sun_alt_col[0], sun_alt_col[middle], sun_alt_col[-1]))
+        print("target_alt %7.2f   %7.2f   %7.2f" % 
+                (target_alt_col[0], target_alt_col[middle], target_alt_col[-1]))
+        print("longitude  %7.2f   %7.2f   %7.2f" % 
+                (longitude_col[0], longitude_col[middle], longitude_col[-1]))
+        print("latitude   %7.2f   %7.2f   %7.2f" % 
+                (latitude_col[0], latitude_col[middle], latitude_col[-1]))
+        print("shift1     %7.2f   %7.2f   %7.2f" % 
+                (shift1_col[0], shift1_col[middle], shift1_col[-1]))
 
-        print ""
-        print "column           min          max       median"
-        print "shift1       %7.2f      %7.2f      %7.2f" % \
-                (shift1_col.min(), shift1_col.max(), median_shift1)
-        print "Ly_alpha %11.5g  %11.5g  %11.5g" % \
-                (ly_alpha_col.min(), ly_alpha_col.max(), median_ly_alpha)
-        print "darkrate %11.5g  %11.5g  %11.5g" % \
-                (darkrate_col.min(), darkrate_col.max(), median_darkrate)
+        print("")
+        print("column           min          max       median")
+        print("shift1       %7.2f      %7.2f      %7.2f" % 
+                (shift1_col.min(), shift1_col.max(), median_shift1))
+        print("Ly_alpha %11.5g  %11.5g  %11.5g" % 
+                (ly_alpha_col.min(), ly_alpha_col.max(), median_ly_alpha))
+        print("darkrate %11.5g  %11.5g  %11.5g" % 
+                (darkrate_col.min(), darkrate_col.max(), median_darkrate))
 
     def clearDqFlag(self):
         """Clear (reset) the bad-time-interval flag in the DQ column.
@@ -633,7 +633,7 @@ class TimelineFilter(object):
         """
 
         if self.events_hdunum is None:
-            raise RuntimeError, "No EVENTS extension in file %s" % self.input
+            raise RuntimeError("No EVENTS extension in file %s" % self.input)
 
         events_hdu = self.fd[self.events_hdunum]
         dq = events_hdu.data.field("dq")
@@ -642,7 +642,7 @@ class TimelineFilter(object):
         history = "Flag %d cleared in DQ column." % calcosparam.DQ_BAD_TIME
         self.fd[0].header.add_history(history)
         if self.verbose:
-            print "Flag %d cleared" % calcosparam.DQ_BAD_TIME
+            print("Flag %d cleared" % calcosparam.DQ_BAD_TIME)
 
         ngti = len(self.gti_list)
         if ngti > 1:
@@ -655,8 +655,8 @@ class TimelineFilter(object):
             self.fd[last_gti_hdunum] = self.fd[prev_gti_hdunum].copy()
             self.fd[last_gti_hdunum].header.update("extver", last_gti_extver)
             if self.verbose:
-                print "GTI extension %d overwritten by GTI extension %d" % \
-                        (last_gti_hdunum, prev_gti_hdunum)
+                print("GTI extension %d overwritten by GTI extension %d" % 
+                        (last_gti_hdunum, prev_gti_hdunum))
 
         # Recompute the exposure time.  While DQ_BAD_TIME has been cleared,
         # DQ_BURST might still be set.
@@ -682,10 +682,10 @@ class TimelineFilter(object):
         """
 
         if self.events_hdunum is None:
-            raise RuntimeError, "No EVENTS extension in file %s" % self.input
+            raise RuntimeError("No EVENTS extension in file %s" % self.input)
 
         if self.tl_hdunum is None:
-            raise RuntimeError, "No TIMELINE extension in file %s" % self.input
+            raise RuntimeError("No TIMELINE extension in file %s" % self.input)
 
         # this is the complete header/data unit
         events_hdu = self.fd[self.events_hdunum]
@@ -737,8 +737,7 @@ class TimelineFilter(object):
                     saved = True
                     conj = None
                 else:
-                    raise RuntimeError, \
-                        "don't understand filter %s" % self.filter
+                    raise RuntimeError("don't understand filter %s" % self.filter)
 
         if not saved:
             flags.append(flag_a.copy())
@@ -754,7 +753,7 @@ class TimelineFilter(object):
                 elif conj == XOR:
                     flag = np.logical_xor(flag, item)
                 else:
-                    raise RuntimeError, "don't recognize conjunction %s" % conj
+                    raise RuntimeError("don't recognize conjunction %s" % conj)
                 conj = None
             else:
                 conj = item
@@ -792,7 +791,7 @@ class TimelineFilter(object):
         history = "%s flagged as bad." % self.filter_str
         self.fd[0].header.add_history(history)
         if self.verbose:
-            print "%s flagged as bad" % self.filter_str
+            print("%s flagged as bad" % self.filter_str)
 
         # Compute the exposure time, update the EXPTIME keyword, and get
         # an updated list of good time intervals, then write the updated
@@ -960,7 +959,7 @@ class TimelineFilter(object):
                 it_begin = nz[i] + 1
                 it_end = None
             else:
-                print "internal error:  dflag = %d" % dflag[nz[i]]
+                print("internal error:  dflag = %d" % dflag[nz[i]])
         if it_end is None and it_begin is not None:
             gti_indices.append([it_begin, nevents-1])
 
@@ -995,7 +994,7 @@ class TimelineFilter(object):
         if detector == "FUV":
             self.fd[self.events_hdunum].header.update("exptime", exptime)
         if self.verbose and abs(exptime - old_exptime) > 0.032:
-            print "EXPTIME changed from %.8g to %.8g" % (old_exptime, exptime)
+            print("EXPTIME changed from %.8g to %.8g" % (old_exptime, exptime))
 
         return gti
 
@@ -1035,7 +1034,7 @@ class TimelineFilter(object):
                 elif start_2 <= start_1 and stop_2 >= stop_1:
                     gti.append([start_1, stop_1])
                 else:
-                    print "oops ... confused!"
+                    print("oops ... confused!")
 
         return gti
 
@@ -1105,12 +1104,12 @@ class TimelineFilter(object):
         if inplace:
             self.fd[self.gti_hdunum] = hdu
             if self.verbose:
-                print "GTI extension updated in-place"
+                print("GTI extension updated in-place")
         else:
             self.fd.append(hdu)
             self.fd[0].header.update("nextend", len(self.fd)-1)
             if self.verbose:
-                print "New GTI extension appended"
+                print("New GTI extension appended")
 
     def findExtensions(self):
         """Find EVENTS, GTI and TIMELINE extensions.
@@ -1172,7 +1171,7 @@ class TimelineFilter(object):
         """
 
         if len(self.events_list) > 1:
-            raise(RuntimeError, "%d EVENTS tables in %s" %
+            raise RuntimeError("%d EVENTS tables in %s" %
                   (len(self.events_list), self.input))
 
         if self.events_list:
@@ -1190,7 +1189,7 @@ class TimelineFilter(object):
             self.gti_hdunum = None
 
         if len(self.tl_list) > 1:
-            raise(RuntimeError, "%d TIMELINE tables in %s" %
+            raise RuntimeError("%d TIMELINE tables in %s" %
                   (len(self.tl_list), self.input))
         if self.tl_list:
             # extract hdunum from [extver, hdunum] for the TIMELINE HDU
@@ -1217,7 +1216,7 @@ class TimelineFilter(object):
         self.fd[0].header.update("filename",
                                  os.path.basename(self.output))
         if self.verbose:
-            print "Writing to", self.output
+            print("Writing to", self.output)
         self.fd.writeto(self.output)
 
 #
@@ -1251,7 +1250,7 @@ def getHelpAsString(fulldoc=True):
 # xxx TimelineFilter.__doc__ = getHelpAsString(fulldoc=False)
 
 def help():
-    print getHelpAsString()
+    print(getHelpAsString())
 
 if __name__ == "__main__":
 
