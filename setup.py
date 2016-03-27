@@ -1,15 +1,48 @@
 #!/usr/bin/env python
+import recon.release
+from glob import glob
+from setuptools import setup, find_packages, Extension
 
-try:
-    from setuptools import setup
-except ImportError:
-    from distribute_setup import use_setuptools
-    use_setuptools()
-    from setuptools import setup
+
+version = recon.release.get_info()
+recon.release.write_template(version, 'lib/costools')
 
 setup(
-    setup_requires=['d2to1>=0.2.5', 'stsci.distutils>=0.3.2'],
-    d2to1=True,
-    use_2to3=False,
-    zip_safe=False
+    name = 'costools',
+    version = version.pep386,
+    author = 'Warren Hack, Nadezhda Dencheva, Phil Hodge',
+    author_email = 'help@stsci.edu',
+    description = 'Tools for COS (Cosmic Origins Spectrograph)',
+    url = 'https://github.com/spacetelescope/costools',
+    classifiers = [
+        'Intended Audience :: Science/Research',
+        'License :: OSI Approved :: BSD License',
+        'Operating System :: OS Independent',
+        'Programming Language :: Python',
+        'Topic :: Scientific/Engineering :: Astronomy',
+        'Topic :: Software Development :: Libraries :: Python Modules',
+    ],
+    install_requires = [
+        'astropy',
+        'nose',
+        'numpy',
+        'sphinx',
+        'stsci.tools'
+    ],
+
+    package_dir = {
+        '':'lib'
+    },
+    packages = find_packages('lib'),
+    package_data = {
+        'costools': [
+            'pars/*',
+            '*.help',
+        ]
+    },
+    entry_points = {
+        'console_scripts': [
+            'timefilter=costools.timefilter:main',
+        ],
+    },
 )
