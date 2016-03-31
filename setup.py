@@ -1,11 +1,11 @@
 #!/usr/bin/env python
-import recon.release
+import relic.release
 from glob import glob
 from setuptools import setup, find_packages, Extension
 
 
-version = recon.release.get_info()
-recon.release.write_template(version, 'lib/costools')
+version = relic.release.get_info()
+relic.release.write_template(version, 'lib/costools')
 
 setup(
     name = 'costools',
