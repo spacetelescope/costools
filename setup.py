@@ -1,7 +1,25 @@
 #!/usr/bin/env python
-import relic.release
+import os
+import subprocess
+import sys
 from glob import glob
 from setuptools import setup, find_packages, Extension
+
+if os.path.exists('relic'):
+    sys.path.insert(1, 'relic')
+    import relic.release
+else:
+    try:
+        import relic.release
+    except ImportError:
+        try:
+            subprocess.check_call(['git', 'clone', 
+                'https://github.com/jhunkeler/relic.git'])
+            sys.path.insert(1, 'relic')
+            import relic.release
+        except subprocess.CalledProcessError as e:
+            print(e)
+            exit(1)
 
 
 version = relic.release.get_info()
