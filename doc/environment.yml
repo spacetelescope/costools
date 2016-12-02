@@ -1,0 +1,12 @@
+name: costools
+channels:
+  - http://ssb.stsci.edu/astroconda
+dependencies:
+  - d2to1>=0.2.5
+  - stsci.distutils>=0.3.2
+  - stsci.sphinxext
+  - matplotlib
+  - calcos
+  - numpy
+  - stsci.tools
+  - astropy
