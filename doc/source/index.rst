@@ -9,19 +9,19 @@ This package provides data processing tools for working with COS data.
 
 
 Contents:
- 
+
 .. toctree::
    :maxdepth: 2
 
+   costoolsutil
    saamodel
-   timefilter   
-   
+   splittag
+   timefilter
+   x1dcorr
+
 Indices and tables
 ==================
 
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
- 
- 
