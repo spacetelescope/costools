@@ -44,7 +44,6 @@ import os
 import sys
 import numpy as np
 import astropy.io.fits as fits
-from astropy.table import Table
 from stsci.tools import parseinput, teal
 from calcos import ccos
 from calcos import calcosparam, cosutil
