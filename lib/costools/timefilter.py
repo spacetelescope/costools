@@ -44,6 +44,7 @@ import os
 import sys
 import numpy as np
 import astropy.io.fits as fits
+from astropy.table import Table
 from stsci.tools import parseinput, teal
 from calcos import ccos
 from calcos import calcosparam, cosutil
@@ -653,7 +654,7 @@ class TimelineFilter(object):
             prev_gti_hdunum = prev_gti_info[1]
             # overwrite last GTI extension with previous one
             self.fd[last_gti_hdunum] = self.fd[prev_gti_hdunum].copy()
-            self.fd[last_gti_hdunum].header.update("extver", last_gti_extver)
+            self.fd[last_gti_hdunum].header["extver"] = last_gti_extver
             if self.verbose:
                 print("GTI extension %d overwritten by GTI extension %d" % 
                         (last_gti_hdunum, prev_gti_hdunum))
@@ -990,9 +991,9 @@ class TimelineFilter(object):
         else:
             exptime_key = "exptime"
         old_exptime = self.fd[self.events_hdunum].header.get(exptime_key, 0.)
-        self.fd[self.events_hdunum].header.update(exptime_key, exptime)
+        self.fd[self.events_hdunum].header[exptime_key] = exptime
         if detector == "FUV":
-            self.fd[self.events_hdunum].header.update("exptime", exptime)
+            self.fd[self.events_hdunum].header[exptime_key] = exptime
         if self.verbose and abs(exptime - old_exptime) > 0.032:
             print("EXPTIME changed from %.8g to %.8g" % (old_exptime, exptime))
 
@@ -1080,8 +1081,8 @@ class TimelineFilter(object):
         col.append(fits.Column(name="START", format="1D", unit="s"))
         col.append(fits.Column(name="STOP", format="1D", unit="s"))
         cd = fits.ColDefs(col)
-        hdu = fits.new_table(cd, nrows=len_gti)
-        hdu.header.update("extname", "GTI")
+        hdu = fits.BinTableHDU.from_columns(cd)
+        hdu.header["extname"] = "GTI"
         outdata = hdu.data
         startcol = outdata.field("START")
         stopcol = outdata.field("STOP")
@@ -1100,14 +1101,14 @@ class TimelineFilter(object):
             if not inplace:
                 extver += 1
 
-        hdu.header.update("extver", extver)
+        hdu.header["extver"] = extver
         if inplace:
             self.fd[self.gti_hdunum] = hdu
             if self.verbose:
                 print("GTI extension updated in-place")
         else:
             self.fd.append(hdu)
-            self.fd[0].header.update("nextend", len(self.fd)-1)
+            self.fd[0].header["nextend"] = len(self.fd)-1
             if self.verbose:
                 print("New GTI extension appended")
 
@@ -1213,8 +1214,8 @@ class TimelineFilter(object):
     def writeNewOutputFile(self):
         """Write the current HDUList to a new output file."""
 
-        self.fd[0].header.update("filename",
-                                 os.path.basename(self.output))
+        self.fd[0].header["filename"] = \
+                                 os.path.basename(self.output)
         if self.verbose:
             print("Writing to", self.output)
         self.fd.writeto(self.output)
