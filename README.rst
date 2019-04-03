@@ -4,9 +4,6 @@ COSTools
 .. image:: https://readthedocs.org/projects/costools/badge/?version=latest
     :target: http://costools.readthedocs.io/en/latest/
 
-.. image:: https://travis-ci.org/spacetelescope/costools.svg?branch=master
-    :target: https://travis-ci.org/spacetelescope/costools
-
 .. image:: http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat
     :target: http://www.astropy.org
     :alt: Powered by Astropy Badge
