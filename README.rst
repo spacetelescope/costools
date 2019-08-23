@@ -1,6 +1,13 @@
 COSTools
 ========
 
+.. image:: https://dev.azure.com/spacetelescope/costools/_apis/build/status/spacetelescope.costools?branchName=master
+    :target: https://dev.azure.com/spacetelescope/costools/_build/latest?definitionId=5&branchName=master
+    :alt: Azure Pipelines build status
+
+.. image:: https://codecov.io/gh/spacetelescope/costools/branch/master/graph/badge.svg
+    :target: https://codecov.io/gh/spacetelescope/costools
+
 .. image:: https://readthedocs.org/projects/costools/badge/?version=latest
     :target: http://costools.readthedocs.io/en/latest/
 
