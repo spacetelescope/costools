@@ -1,1 +1,8 @@
-doc/build
+*.egg*
+*.pyc
+.coverage
+build
+docs/build
+dist
+__pycache__
+pip-wheel-metadata

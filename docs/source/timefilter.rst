@@ -1,8 +1,5 @@
-.. _timefilter:
-
-**************************
 timefilter
-**************************
+----------
 
 .. currentmodule:: costools.timefilter
 
