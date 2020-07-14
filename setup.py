@@ -7,7 +7,7 @@ PACKAGENAME = 'costools'
 
 setup(
     name=PACKAGENAME,
-    use_scm_version=True,
+    use_scm_version={'write_to': 'costools/version.py'},
     setup_requires=['setuptools_scm'],
     install_requires=[
         'astropy',
