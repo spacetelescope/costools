@@ -55,7 +55,10 @@ copyright = u'2012, Warren Hack, Nadia Dencheva, Chris Sontag, Megan Sosey, Mich
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
-from costools import __version__ as VERSION
+try:
+    from costools import __version__ as VERSION
+except Exception:
+    VERSION = 'UNKNOWN'
 # The short X.Y version.
 version = VERSION
 # The full version, including alpha/beta/rc tags.
