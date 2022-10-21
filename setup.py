@@ -38,6 +38,9 @@ setup(
             'timefilter = {0}.timefilter:main'.format(PACKAGENAME),
         ],
     },
+    scripts=[
+        'costools/add_cos_s_region.py',
+    ],
     author='Warren Hack, Nadezhda Dencheva, Phil Hodge',
     author_email='help@stsci.edu',
     description='Tools for COS (Cosmic Origins Spectrograph)',
