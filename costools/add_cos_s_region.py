@@ -1,7 +1,8 @@
-#! /usr/bin/env python
+#!/usr/bin/env python
 
 # Add the S_REGION keyword to raw files
 #
+import os
 import glob
 import argparse
 
@@ -53,11 +54,17 @@ def get_files_to_process(rootnames):
                'rawacq.fits']
     file_list = []
     for rootname in rootnames:
+        if os.path.basename(rootname) != rootname:
+            cosutil.printWarning("{}: rootnames should refer to files in the working directory".format(rootname))
         fitslist = glob.glob(rootname.lower() + '*.fits')
+        appended = False
         for input_file in fitslist:
             for ending in endings:
                 if input_file.endswith(ending):
+                    appended = True
                     file_list.append(input_file)
+        if not appended:
+            cosutil.printWarning("{}: No files found for this rootname".format(rootname))
     return file_list
 
 def add_s_region(input_file, dry_run):
@@ -104,7 +111,7 @@ def add_s_region(input_file, dry_run):
         if not success:
             cosutil.printMsg('No S_REGION keyword added to file {}'.format(input_file))
 
-if __name__ == '__main__':
+def call_main():
 
     parser = argparse.ArgumentParser(
     """Add S_REGION value to raw data headers"""
@@ -119,3 +126,6 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     main(args.rootnames, dry_run=args.dry_run)
+
+if __name__ == "__main__":
+    call_main()

@@ -36,6 +36,7 @@ setup(
     entry_points={
         'console_scripts': [
             'timefilter = {0}.timefilter:main'.format(PACKAGENAME),
+            'add_cos_s_region = {}.add_cos_s_region:call_main'.format(PACKAGENAME),
         ],
     },
     scripts=[
