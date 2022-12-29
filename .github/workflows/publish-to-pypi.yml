@@ -19,7 +19,7 @@ jobs:
 
           # Check out the commit containing this workflow file.
           - name: checkout repo
-            uses: actions/checkout@v2
+            uses: actions/checkout@v3
          
           - name: custom action
             uses: spacetelescope/action-publish_to_pypi@master
