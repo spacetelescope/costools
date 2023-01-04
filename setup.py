@@ -45,6 +45,8 @@ setup(
     author='Warren Hack, Nadezhda Dencheva, Phil Hodge',
     author_email='help@stsci.edu',
     description='Tools for COS (Cosmic Origins Spectrograph)',
+    long_description='README.md',
+    long_description_content_type='text/x-rst',
     url='https://github.com/spacetelescope/costools',
     license='BSD',
     classifiers=[
