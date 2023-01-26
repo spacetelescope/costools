@@ -94,7 +94,8 @@ def add_s_region(input_file, dry_run):
                     cosutil.printContinuation('in extension {} header of file {}'.format(n_ext+1, input_file))
                     continue
                 diameter = 2.5 / 3600.0
-                s_region = 'CIRCLE ICRS {0:.8f} {1:.7f} {2:.8f}'.format(ra_aper, dec_aper, diameter)
+                radius = 0.5 * diameter
+                s_region = 'CIRCLE ICRS {0:.8f} {1:.7f} {2:.8f}'.format(ra_aper, dec_aper, radius)
                 if not dry_run:
                     try:
                         existing_s_region = exthdr['S_REGION']
