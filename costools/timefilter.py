@@ -224,7 +224,7 @@ def toRect(longitude, latitude):
         latitude in degrees.
 
     Returns
-    --------
+    -------
     array_like
         Unit vector in rectangular coordinates.
     """
