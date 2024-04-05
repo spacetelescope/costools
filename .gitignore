@@ -6,3 +6,4 @@ docs/build
 dist
 __pycache__
 pip-wheel-metadata
+**/version.py
