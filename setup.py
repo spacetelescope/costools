@@ -19,6 +19,7 @@ setup(
         'docs': [
             'sphinx',
             'numpydoc',
+            'sphinx_rtd_theme>1.2.0',
         ],
         'test': [
             'pytest',
