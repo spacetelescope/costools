@@ -1,6 +1,67 @@
+[project]
+name = "costools"
+description = "Tools for COS (Cosmic Origins Spectrograph)"
+authors = [
+    { name = "Warren Hack" },
+    { name = "Nadezhda Dencheva" },
+    { name = "Phil Hodge" },
+]
+license-files = ["LICENSE.txt"]
+classifiers = [
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Topic :: Scientific/Engineering :: Astronomy",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "astropy",
+    "calcos",
+    "numpy",
+    "stsci.tools",
+]
+dynamic = [
+    "version",
+]
+
+[project.readme]
+file = "README.md"
+content-type = "text/markdown"
+
+[project.scripts]
+timefilter = "costools.timefilter:main"
+add_cos_s_region = "costools.add_cos_s_region:call_main"
+
+[project.optional-dependencies]
+docs = [
+    "sphinx",
+    "numpydoc",
+    "sphinx-rtd-theme",
+]
+test = [
+    "pytest",
+    "pytest-cov",
+]
+
 [build-system]
 requires = [
-    "setuptools>=38.2.5",
+    "setuptools>=61.2",
     "setuptools_scm",
     "wheel",
 ]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+include-package-data = false
+
+[tool.setuptools.packages.find]
+
+[tool.setuptools.package-data]
+costools = [
+    "pars/*",
+    "*.help",
+]
+
+[tool.setuptools_scm]
+version_file = "costools/version.py"
