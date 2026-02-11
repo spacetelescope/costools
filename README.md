@@ -1,6 +1,7 @@
 # COSTools
 
-[![Build status](https://dev.azure.com/spacetelescope/costools/_apis/build/status/spacetelescope.costools?branchName=master)](https://dev.azure.com/spacetelescope/costools/_build/latest?definitionId=5&branchName=master)
+[![build](https://github.com/spacetelescope/costools/actions/workflows/publish-to-pypi.yml/badge.svg?branch=master)](https://github.com/spacetelescope/costools/actions/workflows/publish-to-pypi.yml)
+[![tests](https://github.com/spacetelescope/costools/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/spacetelescope/costools/actions/workflows/tests.yml)
 [![Codecov](https://codecov.io/gh/spacetelescope/costools/branch/master/graph/badge.svg)](https://codecov.io/gh/spacetelescope/costools)
 [![ReadtheDocs](https://readthedocs.org/projects/costools/badge/?version=latest)(http://costools.readthedocs.io/en/latest/)
 [![Powered by Astropy](http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat)(http://www.astropy.org)
